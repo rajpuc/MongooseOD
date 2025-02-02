@@ -1,26 +1,20 @@
-## Commit 06: Schema Types 
-![](./mdAssets/1.png)
+## Commit 06: Default Value & Version key
+- ### Default value hocce - jodi kono property er default value amra declare kore dei, sheikhetre oi property er value jodi amra supply kora na kori, ba oi property ta mention kora na hoi, tar pore o oi property create hoye jabe default value ta niye. for example:
 
 ```javascript
-//models/demoModel.js
-import mongoose from 'mongoose';
-
-const DataSchema = new mongoose.Schema({
-    Name: String,
-    Roll: Number,
-    Class: String,
-    Remarks:String,
-    Adult:Boolean,
-    Comments:[],
-    details:{},
-    DOB:Date
-});
- 
-const DemoModel = mongoose.model('students', DataSchema);
-
-export default DemoModel;
+    date:{
+        type: Date,
+        default: Date.now
+    }  
 ```
-## Akhon ai data type k amra chaile nicher moto koreo likhte pari:
+- ### Version key: Jokon amra mongodb te mongoose use kore data insert kori, tokon document tar niche dekben `__v` name a akta notun property generate hoi, ai property mongoose nijer tekhe create kore. Atakei muloto version key bola hocce. Beshibag khetrei atar proyojon hoi na. Toh jodi apnr ai version key tar proyojon na hoi tahole shekhetre apni jta korte paren: version key ta k apni false kore rakhte paren. False korer jonno apnake schema er moddhe likhte hobe:
+
+```javascript
+{
+    versionKey:false
+}
+```
+
 ```javascript
 import mongoose from 'mongoose';
 
@@ -35,7 +29,8 @@ const DataSchema = new mongoose.Schema({
         type: String
     },
     Remarks:{
-        type: string
+        type: string,
+        default:"No Remarks"
     },
     Adult:{
         type: Boolean
@@ -43,7 +38,7 @@ const DataSchema = new mongoose.Schema({
     Comments:[],
     details:{},
     DOB:Date
-});
+},{versionKey:false});
  
 const DemoModel = mongoose.model('students', DataSchema);
 

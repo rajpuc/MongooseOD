@@ -19,7 +19,7 @@ const DataSchema = new mongoose.Schema({
     Comments:[],
     details:{},
     DOB:Date
-});
+},{versionKey:false});
  
 const DemoModel = mongoose.model('students', DataSchema);
 
