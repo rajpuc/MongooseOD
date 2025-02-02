@@ -1,5 +1,6 @@
 import StudentsModel from "../models/studentsModel.js";
 
+//create
 export const insertData = async function(req, res) {
     try {
         let reqBody = req.body;
@@ -11,7 +12,7 @@ export const insertData = async function(req, res) {
         res.end();
     }
 };
-
+//read
 export const readStudents = async function (req, res) {
     try {
         let query = {};
@@ -31,4 +32,24 @@ export const readStudents = async function (req, res) {
         });
     }
 };
+//upadate
+export const updateStudents = function (req, res) {
+    let id = req.params.id;
+    let query = { _id: id };
+    let reqBody = req.body;
 
+    StudentsModel.updateOne(query, reqBody)
+        .exec()
+        .then((data) => {
+            res.status(200).json({
+                status: 'success',
+                data: data,
+            });
+        })
+        .catch((err) => {
+            res.status(400).json({
+                status: 'failed',
+                data: err,
+            });
+        });
+};

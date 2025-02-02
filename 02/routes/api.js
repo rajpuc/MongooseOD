@@ -7,5 +7,6 @@ router.get("/",function (req,res){
 })
 router.post("/insert-students", studentsController.insertData);
 router.get("/read-students", studentsController.readStudents);
+router.post("/update-students/:id", studentsController.updateStudents);
 
 export default router;
