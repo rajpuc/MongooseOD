@@ -1,13 +1,12 @@
-## Commit 04: Update documents:
-```javascript 
-export const updateStudents = async function (req, res) {
+## Commit 05: delete documents:
+```javascript
+export const deleteStudents = async function (req, res) {
     try {
         let id = req.params.id;
         let query = { _id: id };
-        let reqBody = req.body;
 
-        // Await the update operation
-        let data = await StudentsModel.updateOne(query, reqBody);
+        // Use `deleteOne()` instead of `remove()`
+        let data = await StudentsModel.deleteOne(query);
 
         res.status(200).json({
             status: 'success',
@@ -20,38 +19,19 @@ export const updateStudents = async function (req, res) {
         });
     }
 };
-
 ```
+
+---
+
+### **Fixed Version Using `.then().catch()`**
+If you want to use **Promises** instead of `async/await`:
+
 ```javascript
-export const updateStudents = async function (req, res) {
-    try {
-        let id = req.params.id;
-        let query = { _id: id };
-        let reqBody = req.body;
-
-        // Using exec() to ensure a proper Promise
-        let data = await StudentsModel.updateOne(query, reqBody).exec();
-
-        res.status(200).json({
-            status: 'success',
-            data: data,
-        });
-    } catch (err) {
-        res.status(400).json({
-            status: 'failed',
-            data: err,
-        });
-    }
-};
-
-```
-```javascript
-export const updateStudents = function (req, res) {
+export const deleteStudents = function (req, res) {
     let id = req.params.id;
     let query = { _id: id };
-    let reqBody = req.body;
 
-    StudentsModel.updateOne(query, reqBody)
+    StudentsModel.deleteOne(query)
         .then((data) => {
             res.status(200).json({
                 status: 'success',
@@ -65,15 +45,42 @@ export const updateStudents = function (req, res) {
             });
         });
 };
-
 ```
+
+---
+
+### **Using `.exec()`
+
+#### **With `async/await`**
 ```javascript
-export const updateStudents = function (req, res) {
+export const deleteStudents = async function (req, res) {
+    try {
+        let id = req.params.id;
+        let query = { _id: id };
+
+        // Using `.exec()` for better performance
+        let data = await StudentsModel.deleteOne(query).exec();
+
+        res.status(200).json({
+            status: 'success',
+            data: data,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'failed',
+            data: err,
+        });
+    }
+};
+```
+
+#### **With `.then().catch()`**
+```javascript
+export const deleteStudents = function (req, res) {
     let id = req.params.id;
     let query = { _id: id };
-    let reqBody = req.body;
 
-    StudentsModel.updateOne(query, reqBody)
+    StudentsModel.deleteOne(query)
         .exec()
         .then((data) => {
             res.status(200).json({
@@ -88,5 +95,5 @@ export const updateStudents = function (req, res) {
             });
         });
 };
-
 ```
+

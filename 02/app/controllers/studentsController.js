@@ -53,3 +53,25 @@ export const updateStudents = function (req, res) {
             });
         });
 };
+
+
+//delete
+export const deleteStudents = async function (req, res) {
+    try {
+        let id = req.params.id;
+        let query = { _id: id };
+
+        // Use `deleteOne()` instead of `remove()`
+        let data = await StudentsModel.deleteOne(query);
+
+        res.status(200).json({
+            status: 'success',
+            data: data,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'failed',
+            data: err,
+        });
+    }
+};
