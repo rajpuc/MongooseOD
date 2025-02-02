@@ -12,3 +12,23 @@ export const insertData = async function(req, res) {
     }
 };
 
+export const readStudents = async function (req, res) {
+    try {
+        let query = {};
+        let projection = 'Name Roll ';
+        
+        // Await the query execution
+        let data = await StudentsModel.find(query, projection).exec();
+
+        res.status(200).json({
+            status: 'success',
+            data: data,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'failed',
+            data: err,
+        });
+    }
+};
+

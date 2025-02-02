@@ -1,60 +1,135 @@
-## Mongoose use korte hole:
-1. ### install mongoose:
-    - ### Run on terminal : `npm i mongoose`
-2. ### Create  DB Connection:
-    - ### Mongoose  diye DB connection er shomoy 2ta jinish proyojon hobe:
-        1. ### 1ta hocce uri. jkhane 2ta jinish takbe akta hocce db location and r akta db name. For example:
-        2. ### 2nd j jinishta lagbe sheta hocce akta object jta  k amra options bolbo. jekhane amader bole dite user and password. And jodi user and password na takhe tahole shei khetre amra agula k empty kore dite pari. for example:
-        ```javascript
-        //app.js
-        let uri = 'mongodb://127.0.0.1:27017/dbName';
-        let options = { user:'',pass:''};
-
-        mongoose
-            .connect(uri,options)
-            .then(function(){
-                console.log("Connected");
-            })
-            .catch(function(err){
-                console.log(err);
-            })
-        ```
-3. ### Create your first mongoose Model:
-    - ### Mongoose diye data model make korer jonno `mongoose` er package ti import kore nite hobe.
-    - ### Er por amader data schema make korte hobe.
-    - ### Er por amra Data Schema ta use kore amra Model baniye felbo.
-    - ### Eigula Actual db te jta korbe sheta hocce:
-        - ### Schema muloto db te akta document make korbe. Muloto Schema er maddhome amra bole dite pari akta dcoument er structure bolen, defination bolen, shape bolen - kmn hobe sheta bole dite pari.
-        - ### R model er maddhome amra db te collection make kori.
+## Data Read
+- ### Data read korer jonno amader mongodb er fundamental jinish gulai use korte pari.
     ```javascript
-    //models/studentsModel.js
-    import mongoose from 'mongoose';
+        export const readStudents = async function (req, res) {
+            try {
+                let query = {};
+                let projection = 'Name Roll Class Remarks';
+                
+                // Await the query execution
+                let data = await StudentsModel.find(query, projection);
 
-    const DataSchema = new mongoose.Schema({
-        Name: String,
-        Roll: String,
-        Class: String,
-        Remarks: String
-    });
+                res.status(200).json({
+                    status: 'success',
+                    data: data,
+                });
+            } catch (err) {
+                res.status(400).json({
+                    status: 'failed',
+                    data: err,
+                });
+            }
+        };
+    ```
+    ```javascript
+        export const readStudents = async function (req, res) {
+            try {
+                let query = {};
+                let projection = 'Name Roll Class Remarks';
+                
+                // Await the query execution
+                let data = await StudentsModel.find(query, projection).exec();
 
-    const StudentsModel = mongoose.model('students', DataSchema);
+                res.status(200).json({
+                    status: 'success',
+                    data: data,
+                });
+            } catch (err) {
+                res.status(400).json({
+                    status: 'failed',
+                    data: err,
+                });
+            }
+        };
 
-    export default StudentsModel;
     ```
 
 
-4. ### Work with mongoose model:
-    ```javascript
-    //controllers/studentsController.js
-    import StudentsModel from "../models/studentsModel.js";
+    If you don’t use `.exec()`, **the `try-catch` block will still work** because `Mongoose` queries return a `thenable` (Promise-like) object. However, using `.exec()` is considered a best practice for clarity and performance.
 
-    export const insertData = async function(req, res) {
-        try {
-            let reqBody = req.body;
-            let data = await StudentsModel.create(reqBody);
-            res.status(201).json({ status: "success", data: data });
-        } catch (err) {
-            res.status(400).json({ status: "fail", data: err });
-        }
-    };
-    ```
+---
+
+### **Without `.exec()` (Still Works)**
+```javascript
+export const readStudents = async function (req, res) {
+    try {
+        let query = {};
+        let projection = 'Name Roll Class Remarks';
+
+        // Without `.exec()`, but still works
+        let data = await StudentsModel.find(query, projection);
+
+        res.status(200).json({
+            status: 'success',
+            data: data,
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'failed',
+            data: err,
+        });
+    }
+};
+```
+### **Why Use `.exec()`?**
+1. **Clear Intent**: `.exec()` explicitly tells Mongoose to return a Promise. Without `.exec()`, `Mongoose` sometimes behaves unpredictably (e.g., when using `.then()` chaining).
+2. **Better Error Handling**: If there are chained queries, `.exec()` ensures that errors are properly caught.
+3. **Performance Optimization**: `.exec()` avoids unnecessary function wrapping by Mongoose.
+
+#### **When should you use `.exec()`?**
+- If you are chaining multiple query operations.
+- If you want to make sure Mongoose treats the query as a real Promise.
+- If you are using `.lean()`, `.populate()`, etc.
+
+---
+
+### **Conclusion**
+- **Both versions work**, but `.exec()` is preferred for better clarity and reliability.
+- If you're just using `find()`, it's **fine** to omit `.exec()`, but using it ensures safer and more predictable behavior.
+
+### Another ways to do that:
+```javascript
+
+export const readStudents = function (req, res) {
+    let query = {};
+    let projection = 'Name Roll Class Remarks';
+
+    StudentsModel.find(query, projection)
+        .then((data) => {
+            res.status(200).json({
+                status: 'success',
+                data: data,
+            });
+        })
+        .catch((err) => {
+            res.status(400).json({
+                status: 'failed',
+                data: err,
+            });
+        });
+};
+
+```
+
+```javascript
+export const readStudents = function (req, res) {
+    let query = {};
+    let projection = 'Name Roll Class Remarks';
+
+    StudentsModel.find(query, projection)
+        .exec()
+        .then((data) => {
+            res.status(200).json({
+                status: 'success',
+                data: data,
+            });
+        })
+        .catch((err) => {
+            res.status(400).json({
+                status: 'failed',
+                data: err,
+            });
+        });
+};
+
+```

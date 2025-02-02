@@ -1,5 +1,5 @@
 //config/config.js
-export const MONGODB_CONNECTION="mongodb://127.0.0.1:27017/Schools";
+export const MONGODB_CONNECTION="mongodb+srv://ajoypalraj:1234@cluster0.b9hlp.mongodb.net/Schools";
 
 export const JWT_SECRET = "5EC7CEFA1BE7C9354A639369A2AA8";
 export const JWT_EXPIRATION_TIME = 60*60*24*30;
