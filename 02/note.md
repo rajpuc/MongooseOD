@@ -1,99 +1,52 @@
-## Commit 05: delete documents:
-```javascript
-export const deleteStudents = async function (req, res) {
-    try {
-        let id = req.params.id;
-        let query = { _id: id };
-
-        // Use `deleteOne()` instead of `remove()`
-        let data = await StudentsModel.deleteOne(query);
-
-        res.status(200).json({
-            status: 'success',
-            data: data,
-        });
-    } catch (err) {
-        res.status(400).json({
-            status: 'failed',
-            data: err,
-        });
-    }
-};
-```
-
----
-
-### **Fixed Version Using `.then().catch()`**
-If you want to use **Promises** instead of `async/await`:
+## Commit 06: Schema Types 
+![](./mdAssets/1.png)
 
 ```javascript
-export const deleteStudents = function (req, res) {
-    let id = req.params.id;
-    let query = { _id: id };
+//models/demoModel.js
+import mongoose from 'mongoose';
 
-    StudentsModel.deleteOne(query)
-        .then((data) => {
-            res.status(200).json({
-                status: 'success',
-                data: data,
-            });
-        })
-        .catch((err) => {
-            res.status(400).json({
-                status: 'failed',
-                data: err,
-            });
-        });
-};
+const DataSchema = new mongoose.Schema({
+    Name: String,
+    Roll: Number,
+    Class: String,
+    Remarks:String,
+    Adult:Boolean,
+    Comments:[],
+    details:{},
+    DOB:Date
+});
+ 
+const DemoModel = mongoose.model('students', DataSchema);
+
+export default DemoModel;
 ```
-
----
-
-### **Using `.exec()`
-
-#### **With `async/await`**
+## Akhon ai data type k amra chaile nicher moto koreo likhte pari:
 ```javascript
-export const deleteStudents = async function (req, res) {
-    try {
-        let id = req.params.id;
-        let query = { _id: id };
+import mongoose from 'mongoose';
 
-        // Using `.exec()` for better performance
-        let data = await StudentsModel.deleteOne(query).exec();
+const DataSchema = new mongoose.Schema({
+    Name: {
+        type: String
+    },
+    Roll: {
+        type: Number
+    },
+    Class:{
+        type: String
+    },
+    Remarks:{
+        type: string
+    },
+    Adult:{
+        type: Boolean
+    },
+    Comments:[],
+    details:{},
+    DOB:Date
+});
+ 
+const DemoModel = mongoose.model('students', DataSchema);
 
-        res.status(200).json({
-            status: 'success',
-            data: data,
-        });
-    } catch (err) {
-        res.status(400).json({
-            status: 'failed',
-            data: err,
-        });
-    }
-};
+export default DemoModel;
+
 ```
-
-#### **With `.then().catch()`**
-```javascript
-export const deleteStudents = function (req, res) {
-    let id = req.params.id;
-    let query = { _id: id };
-
-    StudentsModel.deleteOne(query)
-        .exec()
-        .then((data) => {
-            res.status(200).json({
-                status: 'success',
-                data: data,
-            });
-        })
-        .catch((err) => {
-            res.status(400).json({
-                status: 'failed',
-                data: err,
-            });
-        });
-};
-```
-
